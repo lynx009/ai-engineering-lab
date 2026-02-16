@@ -1,6 +1,7 @@
+---
 name: PR Validation and Checks
 
-on:
+'on':
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -16,11 +17,11 @@ jobs:
   pr-validation:
     runs-on: ubuntu-latest
     name: Validate Pull Request
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: PR Title Check
         uses: amannn/action-semantic-pull-request@v5
         env:
@@ -36,26 +37,26 @@ jobs:
             test
             chore
           requireScope: false
-          
+
       - name: Check PR Description
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
             感谢您的贡献！ / Thank you for your contribution!
-            
+
             请确保您的 PR：
             ✅ 有清晰的描述 / Has a clear description
-            ✅ 链接了相关的 Issue (如适用) / Links related issues (if applicable)
+            ✅ 链接了相关的 Issue (如适用) / Links related issues
             ✅ 已通过本地测试 / Passes local tests
             ✅ 遵循代码规范 / Follows code standards
-            
+
             AI 代码审查将在几分钟内完成。
             AI code review will be completed in a few minutes.
-            
+
   contributor-check:
     runs-on: ubuntu-latest
     name: Contributor Welcome
-    
+
     steps:
       - name: Welcome First Time Contributors
         uses: actions/first-interaction@v1
@@ -63,17 +64,18 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           pr-message: |
             🎉 感谢您的第一次贡献！ / Thank you for your first contribution!
-            
+
             欢迎来到 AI Engineering Lab！您的 PR 将很快被审查。
             Welcome to AI Engineering Lab! Your PR will be reviewed soon.
-            
+
             请确保您已阅读我们的 [贡献指南](../CONTRIBUTING.md)。
-            Please make sure you've read our [Contributing Guide](../CONTRIBUTING.md).
-            
+            Please make sure you've read our
+            [Contributing Guide](../CONTRIBUTING.md).
+
   auto-assign-reviewers:
     runs-on: ubuntu-latest
     name: Auto Assign Reviewers
-    
+
     steps:
       - name: Auto Request Review
         uses: necojackarc/auto-request-review@v0.13.0
