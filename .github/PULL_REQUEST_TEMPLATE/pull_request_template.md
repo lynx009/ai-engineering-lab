@@ -42,7 +42,7 @@ Closes #
 - [ ] 我已经添加了必要的注释 / I have added necessary comments
 - [ ] 我的更改没有产生新的警告 / My changes generate no new warnings
 - [ ] 我已经更新了相关文档 / I have updated relevant documentation
-- [ ] 我已阅读 [CONTRIBUTING.md](../CONTRIBUTING.md) / I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [ ] 我已阅读 [CONTRIBUTING.md](/CONTRIBUTING.md) / I have read [CONTRIBUTING.md](/CONTRIBUTING.md)
 
 ## 附加说明 / Additional Notes
 

@@ -68,9 +68,9 @@ jobs:
             欢迎来到 AI Engineering Lab！您的 PR 将很快被审查。
             Welcome to AI Engineering Lab! Your PR will be reviewed soon.
 
-            请确保您已阅读我们的 [贡献指南](../CONTRIBUTING.md)。
+            请确保您已阅读我们的 [贡献指南](/CONTRIBUTING.md)。
             Please make sure you've read our
-            [Contributing Guide](../CONTRIBUTING.md).
+            [Contributing Guide](/CONTRIBUTING.md).
 
   auto-assign-reviewers:
     runs-on: ubuntu-latest
@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: Auto Request Review
-        uses: necojackarc/auto-request-review@v0.13.0
+        uses: necojackarc/auto-request-review@v0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           reviewers: lynx009
