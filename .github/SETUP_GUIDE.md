@@ -22,7 +22,7 @@
    - 点击 "Add branch protection rule"
    - Branch name pattern: `main`
 
-3. **配置保护规则**
+3. **配置保护规则** ⚠️ 
    - ✅ **Require a pull request before merging**
      - Required approving reviews: `1`
      - ✅ Dismiss stale pull request approvals when new commits are pushed
@@ -38,8 +38,14 @@
    - ❌ **Include administrators** (允许 @lynx009 在必要时绕过保护)
    - ✅ **Restrict who can push to matching branches**
      - 允许推送的用户: `lynx009`
-   - ❌ **Allow force pushes**
-   - ❌ **Allow deletions**
+   - ❌ **Allow force pushes** 🚨 **关键设置 - 必须禁用**
+     - 防止强制推送覆盖历史记录
+   - ❌ **Allow deletions** 🚨 **关键设置 - 必须禁用**
+     - 防止 main 分支被删除
+
+4. **保存设置**
+   - 点击页面底部的 "Create" 或 "Save changes" 按钮
+   - ✅ 确认所有设置已正确配置
 
 ### 2️⃣ 配置协作者权限
 
@@ -147,7 +153,7 @@ rules and collaboration permissions.
    - Click "Add branch protection rule"
    - Branch name pattern: `main`
 
-3. **Configure Protection Rules**
+3. **Configure Protection Rules** ⚠️
    - ✅ **Require a pull request before merging**
      - Required approving reviews: `1`
      - ✅ Dismiss stale pull request approvals when new commits are pushed
@@ -163,8 +169,14 @@ rules and collaboration permissions.
    - ❌ **Include administrators** (allows @lynx009 to bypass when necessary)
    - ✅ **Restrict who can push to matching branches**
      - Allowed to push: `lynx009`
-   - ❌ **Allow force pushes**
-   - ❌ **Allow deletions**
+   - ❌ **Allow force pushes** 🚨 **CRITICAL - MUST BE DISABLED**
+     - Prevents force pushing which could overwrite history
+   - ❌ **Allow deletions** 🚨 **CRITICAL - MUST BE DISABLED**
+     - Prevents the main branch from being deleted
+
+4. **Save Settings**
+   - Click "Create" or "Save changes" at the bottom of the page
+   - ✅ Confirm all settings are correctly configured
 
 ### 2️⃣ Configure Collaborator Permissions
 

@@ -2,7 +2,13 @@
 
 ## Branch Protection Rules
 
-This document describes the branch protection rules for this repository. These settings should be configured in GitHub repository settings.
+This document describes the branch protection rules for this repository. These settings **must be configured** in GitHub repository settings to provide actual protection.
+
+> **⚠️ IMPORTANT**: The files in `.github/` directory (including `settings.yml`) are documentation and configuration templates. The actual branch protection enforcement happens only when these settings are configured in GitHub's web interface at Settings → Branches.
+
+### Automated Monitoring
+
+A GitHub Actions workflow (`branch-protection-monitor.yml`) runs daily to verify that branch protection is correctly configured. If issues are detected, it will automatically create an issue to alert repository administrators.
 
 ### Main Branch Protection
 
@@ -34,9 +40,13 @@ The `main` branch should have the following protections enabled:
 7. **Restrict who can push to matching branches**
    - People, teams, or apps allowed to push: @lynx009
 
-8. **Allow force pushes**: ❌
+8. **Allow force pushes**: ❌ **CRITICAL - MUST BE DISABLED**
+   - This prevents anyone from force pushing to main, which could overwrite history
+   - Force pushes can cause data loss and bypass code review
 
-9. **Allow deletions**: ❌
+9. **Allow deletions**: ❌ **CRITICAL - MUST BE DISABLED**
+   - This prevents the main branch from being deleted accidentally or maliciously
+   - Deleting the main branch would cause severe disruption
 
 ### Collaborator Permissions
 
@@ -77,15 +87,39 @@ The following apps should have appropriate permissions:
 
 ## Setup Instructions
 
-To apply these settings:
+### Critical: Configure Branch Protection
 
-1. Go to repository Settings → Branches
-2. Add branch protection rule for `main`
-3. Configure all the settings listed above
-4. Go to Settings → Manage access
-5. Add collaborators with appropriate permissions
-6. Go to Settings → Secrets and variables → Actions
-7. Add `OPENAI_API_KEY` if using AI code review
+To apply these settings and **actually protect** the main branch:
+
+1. **Go to repository Settings → Branches**
+   - URL: `https://github.com/lynx009/ai-engineering-lab/settings/branches`
+
+2. **Add branch protection rule for `main`**
+   - Click "Add branch protection rule"
+   - Branch name pattern: `main`
+
+3. **Configure all protection settings** (see list above)
+   - Pay special attention to:
+     - ❌ Allow force pushes: **MUST BE UNCHECKED**
+     - ❌ Allow deletions: **MUST BE UNCHECKED**
+
+4. **Click "Create" or "Save changes"**
+
+5. **Optional: Install Probot Settings App**
+   - Install from: https://github.com/apps/settings
+   - This will automatically apply settings from `.github/settings.yml`
+
+### Additional Setup
+
+6. Go to Settings → Manage access
+7. Add collaborators with appropriate permissions
+8. Go to Settings → Secrets and variables → Actions
+9. Add `OPENAI_API_KEY` if using AI code review
+
+### Verification
+
+After configuring, the `branch-protection-monitor` workflow will verify settings daily. You can also run it manually:
+- Go to Actions → Branch Protection Monitor → Run workflow
 
 ## Additional Security Settings
 

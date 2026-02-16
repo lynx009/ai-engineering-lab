@@ -1,0 +1,82 @@
+---
+# Repository settings for GitHub Probot Settings app
+# If the repository has the Settings app installed, this file will automatically
+# configure the branch protection rules
+# Install from: https://github.com/apps/settings
+
+repository:
+  # Repository name
+  name: ai-engineering-lab
+
+  # Description
+  description: AI Engineering Lab - 人工智能工程学习实验室
+
+  # Homepage
+  homepage: https://github.com/lynx009/ai-engineering-lab
+
+  # Default branch
+  default_branch: main
+
+  # Enable features
+  has_issues: true
+  has_projects: true
+  has_wiki: false
+  has_downloads: true
+
+  # Allow merge methods
+  allow_merge_commit: false
+  allow_squash_merge: true
+  allow_rebase_merge: true
+
+  # Delete head branches after merge
+  delete_branch_on_merge: true
+
+# Branch protection rules
+branches:
+  - name: main
+    # Require pull request reviews before merging
+    protection:
+      required_pull_request_reviews:
+        # Number of required approving reviews
+        required_approving_review_count: 1
+        # Dismiss stale reviews on new commits
+        dismiss_stale_reviews: true
+        # Require review from code owners
+        require_code_owner_reviews: true
+        # Restrict who can dismiss reviews
+        dismissal_restrictions:
+          users: []
+          teams: []
+
+      # Require status checks to pass before merging
+      required_status_checks:
+        # Require branches to be up to date before merging
+        strict: true
+        # Required status checks
+        contexts:
+          - "AI Code Review"
+          - "Validate Pull Request"
+          - "Code Quality Analysis"
+
+      # Enforce restrictions for administrators
+      # Set to false to allow @lynx009 to bypass when necessary
+      enforce_admins: false
+
+      # Restrict who can push to matching branches
+      restrictions:
+        users:
+          - lynx009
+        teams: []
+        apps: []
+
+      # Require linear history (no merge commits)
+      required_linear_history: true
+
+      # Require conversation resolution before merging
+      required_conversation_resolution: true
+
+      # CRITICAL: Prevent force pushes
+      allow_force_pushes: false
+
+      # CRITICAL: Prevent branch deletion
+      allow_deletions: false

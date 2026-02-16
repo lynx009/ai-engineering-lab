@@ -1,0 +1,211 @@
+---
+name: Branch Protection Monitor
+
+# Run daily and on workflow dispatch
+'on':
+  schedule:
+    # Run at 00:00 UTC every day
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/settings.yml'
+      - '.github/workflows/branch-protection-monitor.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-branch-protection:
+    runs-on: ubuntu-latest
+    name: Check Branch Protection Settings
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Branch Protection
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            try {
+              // Get branch protection for main
+              const { data: protection } = await github.rest.repos.getBranchProtection({
+                owner,
+                repo,
+                branch: 'main'
+              });
+
+              console.log('✅ Branch protection is enabled for main branch');
+
+              // Check critical settings
+              const issues = [];
+
+              // Check force push protection
+              if (protection.allow_force_pushes?.enabled) {
+                issues.push('❌ Force pushes are ALLOWED - should be DISABLED');
+              } else {
+                console.log('✅ Force pushes are disabled');
+              }
+
+              // Check deletion protection
+              if (protection.allow_deletions?.enabled) {
+                issues.push('❌ Branch deletions are ALLOWED - should be DISABLED');
+              } else {
+                console.log('✅ Branch deletions are disabled');
+              }
+
+              // Check required reviews
+              if (!protection.required_pull_request_reviews) {
+                issues.push('⚠️ Pull request reviews are not required');
+              } else {
+                console.log('✅ Pull request reviews are required');
+
+                if (!protection.required_pull_request_reviews.require_code_owner_reviews) {
+                  issues.push('⚠️ Code owner reviews are not required');
+                } else {
+                  console.log('✅ Code owner reviews are required');
+                }
+              }
+
+              // Check linear history
+              if (!protection.required_linear_history?.enabled) {
+                issues.push('⚠️ Linear history is not enforced');
+              } else {
+                console.log('✅ Linear history is enforced');
+              }
+
+              // Report findings
+              if (issues.length > 0) {
+                const issueBody = `## ⚠️ Branch Protection Issues Detected
+
+            The following issues were found with the main branch protection settings:
+
+            ${issues.map(i => `- ${i}`).join('\n')}
+
+            ### Required Actions
+
+            Please update the branch protection settings:
+            1. Go to Settings → Branches
+            2. Edit the branch protection rule for \`main\`
+            3. Ensure the following settings:
+               - ❌ Allow force pushes: **DISABLED**
+               - ❌ Allow deletions: **DISABLED**
+               - ✅ Require pull request reviews
+               - ✅ Require review from Code Owners
+               - ✅ Require linear history
+
+            See [.github/SETUP_GUIDE.md](/.github/SETUP_GUIDE.md) for detailed instructions.
+
+            ---
+            *This issue was automatically created by the Branch Protection Monitor workflow.*`;
+
+                // Create or update issue
+                const issues_list = await github.rest.issues.listForRepo({
+                  owner,
+                  repo,
+                  state: 'open',
+                  labels: 'branch-protection',
+                  creator: 'github-actions[bot]'
+                });
+
+                if (issues_list.data.length > 0) {
+                  // Update existing issue
+                  await github.rest.issues.update({
+                    owner,
+                    repo,
+                    issue_number: issues_list.data[0].number,
+                    body: issueBody
+                  });
+                  console.log(`Updated issue #${issues_list.data[0].number}`);
+                } else {
+                  // Create new issue
+                  const issue = await github.rest.issues.create({
+                    owner,
+                    repo,
+                    title: '⚠️ Branch Protection Configuration Issues',
+                    body: issueBody,
+                    labels: ['branch-protection', 'security']
+                  });
+                  console.log(`Created issue #${issue.data.number}`);
+                }
+
+                core.setFailed('Branch protection has configuration issues');
+              } else {
+                console.log('✅ All branch protection settings are correct!');
+
+                // Close any existing issues
+                const issues_list = await github.rest.issues.listForRepo({
+                  owner,
+                  repo,
+                  state: 'open',
+                  labels: 'branch-protection'
+                });
+
+                for (const issue of issues_list.data) {
+                  await github.rest.issues.update({
+                    owner,
+                    repo,
+                    issue_number: issue.number,
+                    state: 'closed',
+                    body: issue.body + '\n\n✅ **Issue resolved** - Branch protection is now correctly configured.'
+                  });
+                  console.log(`Closed issue #${issue.number}`);
+                }
+              }
+
+            } catch (error) {
+              if (error.status === 404) {
+                // Branch protection not configured at all
+                const issueBody = `## 🚨 Branch Protection Not Configured
+
+            **CRITICAL**: The main branch does not have branch protection enabled!
+
+            ### Immediate Actions Required
+
+            1. Go to Settings → Branches
+            2. Click "Add branch protection rule"
+            3. Set branch name pattern: \`main\`
+            4. Configure the following settings:
+               - ✅ Require a pull request before merging
+               - ✅ Require review from Code Owners
+               - ✅ Require status checks to pass before merging
+               - ✅ Require linear history
+               - ✅ Require conversation resolution before merging
+               - ✅ Restrict who can push to matching branches
+               - ❌ Allow force pushes: **DISABLED**
+               - ❌ Allow deletions: **DISABLED**
+
+            See [.github/SETUP_GUIDE.md](/.github/SETUP_GUIDE.md) for detailed setup instructions.
+
+            ### Why This Matters
+
+            Without branch protection:
+            - ❌ Anyone with write access can force push to main
+            - ❌ The main branch can be deleted
+            - ❌ Code can be pushed without review
+            - ❌ Security vulnerabilities may go undetected
+
+            ---
+            *This issue was automatically created by the Branch Protection Monitor workflow.*`;
+
+                const issue = await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: '🚨 CRITICAL: Main Branch Protection Not Configured',
+                  body: issueBody,
+                  labels: ['branch-protection', 'security', 'critical']
+                });
+
+                console.log(`Created critical issue #${issue.data.number}`);
+                core.setFailed('Branch protection is not configured!');
+              } else {
+                throw error;
+              }
+            }
