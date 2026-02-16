@@ -63,6 +63,16 @@ ai-engineering-lab/
 - **协作者**: 可以直接创建分支，通过 PR 方式合并
 - **AI 代码审查**: 所有 PR 将自动进行 AI 代码审查，确保代码质量
 
+### 🛡️ 分支保护
+
+本仓库配置了完整的分支保护机制，保护 main 分支免受强制推送和删除操作。
+
+- 📋 **配置状态**: 完整的保护规则已定义 ([查看详情](BRANCH_PROTECTION_STATUS.md))
+- 🤖 **自动监控**: 每日检查分支保护设置是否正确
+- 🔒 **保护内容**: 禁止强制推送、禁止删除、必需审查
+
+> ⚠️ **注意**: 保护机制需要在 GitHub Settings → Branches 中激活。[查看设置指南](.github/SETUP_GUIDE.md)
+
 ### 📝 许可证
 
 本项目用于学习和研究目的。
@@ -127,6 +137,16 @@ Suggestions and contributions are welcome! If you have good ideas or find issues
 - **New Contributors**: Please contribute through forking the repository
 - **Collaborators**: Can create branches directly and merge via PR
 - **AI Code Review**: All PRs will automatically undergo AI code review to ensure code quality
+
+### 🛡️ Branch Protection
+
+This repository is configured with comprehensive branch protection mechanisms to protect the main branch from force pushes and deletion.
+
+- 📋 **Configuration Status**: Complete protection rules defined ([View Details](BRANCH_PROTECTION_STATUS.md))
+- 🤖 **Automated Monitoring**: Daily checks verify branch protection settings
+- 🔒 **Protection Coverage**: Prevents force pushes, prevents deletion, requires reviews
+
+> ⚠️ **Note**: Protection mechanisms need to be activated in GitHub Settings → Branches. [View Setup Guide](.github/SETUP_GUIDE.md)
 
 ### 📝 License
 
