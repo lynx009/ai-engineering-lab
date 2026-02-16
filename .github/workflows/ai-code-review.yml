@@ -1,0 +1,48 @@
+name: AI Code Review with Copilot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  ai-code-review:
+    runs-on: ubuntu-latest
+    name: AI Code Review
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: AI Code Review
+        uses: freeedcom/ai-codereviewer@v2.2.8
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_MODEL: "gpt-4"
+          exclude: "**/*.json, **/*.md, **/*.txt, **/*.lock, **/package-lock.json, **/yarn.lock"
+          
+  code-quality-check:
+    runs-on: ubuntu-latest
+    name: Code Quality Analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'python, javascript'
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

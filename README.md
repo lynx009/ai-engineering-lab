@@ -56,6 +56,13 @@ ai-engineering-lab/
 - 创建 Pull Request
 - 分享你的经验和见解
 
+**贡献指南**: 请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详细的贡献流程。
+
+#### 贡献方式
+- **新贡献者**: 请通过 Fork 仓库的方式贡献代码
+- **协作者**: 可以直接创建分支，通过 PR 方式合并
+- **AI 代码审查**: 所有 PR 将自动进行 AI 代码审查，确保代码质量
+
 ### 📝 许可证
 
 本项目用于学习和研究目的。
@@ -113,6 +120,13 @@ Suggestions and contributions are welcome! If you have good ideas or find issues
 - Submit Issues
 - Create Pull Requests
 - Share your experiences and insights
+
+**Contributing Guide**: Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution process.
+
+#### How to Contribute
+- **New Contributors**: Please contribute through forking the repository
+- **Collaborators**: Can create branches directly and merge via PR
+- **AI Code Review**: All PRs will automatically undergo AI code review to ensure code quality
 
 ### 📝 License
 

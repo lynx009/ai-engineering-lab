@@ -1,0 +1,11 @@
+# CODEOWNERS file for ai-engineering-lab
+# This file defines who has the authority to review and approve changes
+# Repository owner lynx009 has final authority over the main branch
+
+# Default owner for everything in the repo
+* @lynx009
+
+# Specific protection for critical files
+/.github/ @lynx009
+/README.md @lynx009
+/LICENSE @lynx009
